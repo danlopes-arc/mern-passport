@@ -28,7 +28,11 @@ app.get('/', (req, res) => {
   res.send('Hey')
 })
 
-const port = process.env.PORT || 3000
+app.get('/api', (req, res) => {
+  res.send('Hey')
+})
+
+const port = process.env.PORT || 5000
 
 app.listen(port, () => {
   console.log(`[server] listening to https://localhost:${port}`)
