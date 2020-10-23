@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api', (req, res) => {
-  res.send('Hey')
+  res.send('Hey api')
 })
 
 const port = process.env.PORT || 5000
