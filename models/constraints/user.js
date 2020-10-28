@@ -1,9 +1,7 @@
 export default {
   name: {
-    presence: true,
-    length: {
-      minimum: 3
-    }
+    presence: { allowEmpty: false },
+    length: { minimum: 3 }
   },
   password: {
     presence: true,
@@ -13,6 +11,7 @@ export default {
     }
   },
   email: {
+    presence: true,
     email: true
   }
 }

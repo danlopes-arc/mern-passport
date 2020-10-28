@@ -6,13 +6,16 @@ import validate from 'validate.js'
 
 import User from '../../models/User.js'
 import constraints from '../../models/constraints/user.js'
+import { emptyToString, emptyToNull } from '../../models/constraints/utils.js'
 
 const router = express.Router()
 
 router.post('/register', async (req, res) => {
   let { name, password, email } = req.body
-  email = email.trim().toLowerCase()
-  name = name.trim()
+
+  email = emptyToNull(emptyToString(email).trim().toLowerCase())
+  name = emptyToNull(emptyToString(name))
+  password = emptyToNull(emptyToString(password))
 
   const errors = validate({ name, password, email }, constraints)
 
@@ -20,10 +23,11 @@ router.post('/register', async (req, res) => {
     return res.status(400).json(errors)
   }
 
+
   try {
     const user = await User.findOne({ email })
     if (user != null) {
-      return res.status(400).json({ email: 'Email already exists' })
+      return res.status(400).json({ email: ['Email already exists'] })
     }
 
     const hash = await bcrypt.hash(password, 12)
@@ -40,19 +44,20 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
 
   let { password, email } = req.body
-  email = email.trim().toLowerCase()
+  email = emptyToNull(emptyToString(email).trim().toLowerCase())
+  password = emptyToNull(emptyToString(password))
 
   try {
     const user = await User.findOne({ email })
 
     if (user == null) {
-      return res.status(404).json({ email: 'Email does not exist' })
+      return res.status(404).json({ email: ['Email does not exist'] })
     }
 
     const passwordMatches = await bcrypt.compare(password, user.hash)
 
     if (!passwordMatches) {
-      return res.status(400).json({ password: 'Wrong password' })
+      return res.status(400).json({ password: ['Wrong password'] })
     }
 
     const payload = {
